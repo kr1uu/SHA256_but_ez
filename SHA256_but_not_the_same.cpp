@@ -65,14 +65,15 @@ string compute_hash(const vector<unsigned long> block) {
                 (w[j - 2] >> 19 | w[j - 2] << 13) ^ (w[j - 2] >> 10);
             w[j] = (w[j - 16] + s0 + w[j - 7] + s1) & 0xFFFFFFFF;
         }
-        unsigned long a = h[0], b = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], h[7];
+        unsigned long a = h[0], b = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
         for (int j = 0; j < 64; j++) {
             unsigned long S1 = (e >> 6 | e << 26) ^ (e >> 11 | e << 21) ^ (e >> 25 | e << 7);
             unsigned long ch = (e & f) ^ ((~e) & 1 & g);
-            unsigned long temp1 = (h[7] + S1 + ch + 0x428a2f98d728ae22 + w[j]) & 0xFFFFFFFF;
+            unsigned long temp1 = (hh + S1 + ch + 0x428a2f98d728ae22 + w[j]) & 0xFFFFFFFF;
             unsigned long S0 = (a >> 2 | a << 30) ^ (a >> 13 | a << 19) ^ (a >> 22);
             unsigned long maj = (a & b) ^ (a & c) ^ (b & c);
             unsigned long temp2 = (S0 + maj) & 0xFFFFFFFF;
+            hh = h[7];
             h[7] = h[6];
             h[6] = h[5];
             h[5] = h[4];
@@ -82,6 +83,15 @@ string compute_hash(const vector<unsigned long> block) {
             h[1] = h[0];
             h[0] = (temp1 + temp2) & 0xFFFFFFFF;
         }
+        // Update the h array
+        h[0] += a;
+        h[1] += b;
+        h[2] += c;
+        h[3] += d;
+        h[4] += e;
+        h[5] += f;
+        h[6] += g;
+        h[7] += hh;
     }
     stringstream ss;
     for (int i = 0; i < 8; i++) {
