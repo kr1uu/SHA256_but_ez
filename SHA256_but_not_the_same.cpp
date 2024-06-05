@@ -83,7 +83,7 @@ string compute_hash(const vector<unsigned long> block) {
             h[1] = h[0];
             h[0] = (temp1 + temp2) & 0xFFFFFFFF;
         }
-        // Update the h array
+        // cap nhat du lieu cho mang h de tao cac ma hash khack nhau
         h[0] += a;
         h[1] += b;
         h[2] += c;
